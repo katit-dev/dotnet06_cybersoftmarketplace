@@ -32,8 +32,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
-                "projectPath": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj"
+              "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
+                "projectPath": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj"
               }
             }
           }
@@ -542,14 +542,14 @@
         }
       }
     },
-    "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
+    "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj",
+        "projectUniqueName": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj",
         "projectName": "dotnet06_CybersoftMarketPlace.Infrastructure",
-        "projectPath": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj",
+        "projectPath": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\obj\\",
+        "outputPath": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
