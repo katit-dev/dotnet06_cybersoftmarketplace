@@ -1421,6 +1421,16 @@
         "build": {
           "buildTransitive/net8.0/_._": {}
         }
+      },
+      "dotnet06_CybersoftMarketPlace.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/dotnet06_CybersoftMarketPlace.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/dotnet06_CybersoftMarketPlace.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -4217,6 +4227,11 @@
         "system.security.cryptography.protecteddata.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "dotnet06_CybersoftMarketPlace.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../dotnet06_CybersoftMarketPlace.Infrastructure/dotnet06_CybersoftMarketPlace.Infrastructure.csproj",
+      "msbuildProject": "../dotnet06_CybersoftMarketPlace.Infrastructure/dotnet06_CybersoftMarketPlace.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -4232,7 +4247,8 @@
       "Microsoft.Extensions.Caching.StackExchangeRedis >= 10.0.9",
       "Serilog.AspNetCore >= 10.0.0",
       "Serilog.Sinks.File >= 7.0.0",
-      "Swashbuckle.AspNetCore >= 10.1.7"
+      "Swashbuckle.AspNetCore >= 10.1.7",
+      "dotnet06_CybersoftMarketPlace.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -4266,7 +4282,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
+              "projectPath": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -41,4 +41,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\dotnet06_CybersoftMarketPlace.Infrastructure\dotnet06_CybersoftMarketPlace.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

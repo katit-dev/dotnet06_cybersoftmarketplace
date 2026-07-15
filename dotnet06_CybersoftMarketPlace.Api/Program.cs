@@ -113,6 +113,9 @@ builder.Services
 // Đăng ký dịch vụ phân quyền
 builder.Services.AddAuthorization();
 
+// DI Repository
+builder.Services.AddScoped<UserRepository>();
+
 var app = builder.Build();
 
 // ============================================================
