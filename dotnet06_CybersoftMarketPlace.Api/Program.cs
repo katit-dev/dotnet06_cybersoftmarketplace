@@ -1,18 +1,156 @@
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+// ============================================================
+// DI SWAGGER
+// ============================================================
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    // Viết doc cho Swagger API
+    // Nạp file XML chứa chú thích (summary, response...)
+    // để hiển thị trên Swagger UI
+    var xmlFile =
+        $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+    var xmlPath = System.IO.Path.Combine(
+        AppContext.BaseDirectory,
+        xmlFile
+    );
+
+    if (System.IO.File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1",
+        Description = "API documentation for .NET 10"
+    });
+
+    // Khai báo scheme Bearer
+    // Tạo nút Authorize và ô nhập token trong Swagger
+    options.AddSecurityDefinition(
+        "bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Nhập token JWT vào ô dưới đây"
+        }
+    );
+});
+
+// ============================================================
+// DI AUTHENTICATION - AUTHORIZATION BẰNG JWT
+// ============================================================
+
+// Khóa bí mật dùng để ký token
+var key = builder.Configuration["Jwt:Key"];
+
+// Issuer: bên phát hành token
+var issuer = builder.Configuration["Jwt:Issuer"];
+
+// Audience: bên nhận và sử dụng token
+var audience = builder.Configuration["Jwt:Audience"];
+
+// Cấu hình Authentication sử dụng JWT Bearer
+builder.Services
+    .AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                // Xác thực khóa bí mật của token
+                ValidateIssuerSigningKey = true,
+
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(key!)
+                ),
+
+                // Xác thực Issuer
+                ValidateIssuer = true,
+
+                // Phải khớp với Issuer trong token
+                ValidIssuer = issuer,
+
+                // Xác thực Audience
+                ValidateAudience = true,
+
+                // Phải khớp với Audience trong token
+                ValidAudience = audience,
+
+                // Xác thực thời gian hết hạn của token
+                ValidateLifetime = true,
+
+                // Không cho phép độ trễ sau khi token hết hạn
+                ClockSkew = TimeSpan.Zero,
+
+                // Ánh xạ claim chứa role
+                RoleClaimType = ClaimTypes.Role,
+
+                // Ánh xạ claim chứa tên người dùng
+                NameClaimType = "UserName"
+            };
+    });
+
+// Đăng ký dịch vụ phân quyền
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ============================================================
+// SWAGGER MIDDLEWARE
+// ============================================================
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
+// Chuyển HTTP sang HTTPS
 app.UseHttpsRedirection();
 
+// Xác thực người dùng bằng JWT
+app.UseAuthentication();
+
+// Kiểm tra quyền truy cập
+app.UseAuthorization();
+
+// ============================================================
+// CẤU HÌNH FILE SERVER
+// URL truy cập ảnh: /files/ten-file
+// Thư mục vật lý: FileServer
+// ============================================================
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(
+            builder.Environment.ContentRootPath,
+            "FileServer"
+        )
+    ),
+
+    RequestPath = "/files"
+});
+
+// Ánh xạ các Controller
+app.MapControllers();
 
 app.Run();
