@@ -138,16 +138,19 @@ app.UseAuthorization();
 // URL truy cập ảnh: /files/ten-file
 // Thư mục vật lý: FileServer
 // ============================================================
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(
-            builder.Environment.ContentRootPath,
-            "FileServer"
-        )
-    ),
+app.UseStaticFiles();
+app.UseSwagger();
 
-    RequestPath = "/files"
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "My API V1"
+    );
+
+    // Đặt Swagger UI tại đường dẫn gốc:
+    // http://localhost:<port>/
+    options.RoutePrefix = string.Empty;
 });
 
 // Ánh xạ các Controller
