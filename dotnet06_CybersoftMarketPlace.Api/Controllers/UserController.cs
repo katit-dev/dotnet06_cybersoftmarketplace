@@ -1,5 +1,5 @@
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace dotnet06_CybersoftMarketPlace.Api.Controllers
 {
@@ -7,15 +7,19 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        private readonly IUserRepository _userRepository;
+
+        public UserController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         [HttpGet("getAllUser")]
         public async Task<IActionResult> GetAllUser()
         {
-            await Task.Delay(100);
+            var users = await _userRepository.GetAllUsersAsync();
 
-            return Ok(new
-            {
-                message = "Get users"
-            });
+            return Ok(users);
         }
     }
 }
