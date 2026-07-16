@@ -1,26 +1,23 @@
 // Nơi định nghĩa các phương thức truy xuất dữ liệu liên quan đến User
 
 using Infrastructure.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public interface IUserRepository
+public interface IUserRepository : IRepositoryBase<User>
 {
-    Task<List<User>> GetAllUsersAsync();
+    // Đã có các method từ IRepositoryBase<User>.
+    // Khai báo thêm các method riêng của User tại đây.
+
 }
 
-public class UserRepository : IUserRepository
+public class UserRepository
+    : RepositoryBase<User>, IUserRepository
 {
-    private readonly CybersoftMarketPlaceContext _context;
-
     public UserRepository(CybersoftMarketPlaceContext context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
-    {
-        return await _context.Users.ToListAsync();
-    }
+    // Cài đặt thêm các method riêng của User tại đây.
 }
