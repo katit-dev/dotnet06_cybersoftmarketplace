@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text;
+using Infrastructure.Models;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -113,8 +115,11 @@ builder.Services
 // Đăng ký dịch vụ phân quyền
 builder.Services.AddAuthorization();
 
+// DI DbContext
+builder.Services.AddDbContext<CybersoftMarketPlaceContext>();
+
 // DI Repository
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
