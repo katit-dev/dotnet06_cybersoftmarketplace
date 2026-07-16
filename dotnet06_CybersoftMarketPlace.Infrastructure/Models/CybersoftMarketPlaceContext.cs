@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace dotnet06_CybersoftMarketPlace.Api;
+namespace Infrastructure.Models;
 
 public partial class CybersoftMarketPlaceContext : DbContext
 {

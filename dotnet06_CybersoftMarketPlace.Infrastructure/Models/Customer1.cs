@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace dotnet06_CybersoftMarketPlace.Api;
+namespace Infrastructure.Models;
 
 public partial class Customer1
 {
