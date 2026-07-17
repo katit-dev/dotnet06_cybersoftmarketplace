@@ -17,7 +17,7 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
         [HttpGet("getAllUser")]
         public async Task<IActionResult> GetAllUser()
         {
-            var users = await _userRepository.GetAllUsersAsync();
+            var users = await _userRepository.GetAllAsync();
 
             return Ok(users);
         }
