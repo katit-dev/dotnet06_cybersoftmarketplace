@@ -118,9 +118,7 @@ builder.Services.AddAuthorization();
 // DI DbContext
 builder.Services.AddDbContext<CybersoftMarketPlaceContext>();
 
-// DI Repository
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 
 var app = builder.Build();
 
