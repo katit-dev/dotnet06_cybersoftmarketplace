@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotnet06_CybersoftMarketPlace.Infrastructure\dotnet06_CybersoftMarketPlace.Infrastructure.csproj" />
+    <ProjectReference Include="..\dotnet06_CybersoftMarketPlace.Application\dotnet06_CybersoftMarketPlace.Application.csproj" />
   </ItemGroup>
 
 </Project>
