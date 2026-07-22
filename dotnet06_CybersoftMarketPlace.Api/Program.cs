@@ -112,6 +112,9 @@ builder.Services
             };
     });
 
+// DI UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 // Đăng ký dịch vụ phân quyền
 builder.Services.AddAuthorization();
 
