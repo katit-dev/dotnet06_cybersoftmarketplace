@@ -9,7 +9,8 @@ public interface IRepositoryBase<T> where T : class
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
     Task DeleteAsync(dynamic id);
-
+    Task AddListItemsAsync(List<T> entities);
+    Task UpdateListItemsAsync(List<T> entities);
     Task<T> SingleOrDefault(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
     Task<List<T>> Where(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
 
@@ -71,5 +72,12 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
         return await _dbSet.Where(predicate).ToListAsync();
     }
 
-
+    public async Task AddListItemsAsync(List<T> entities)
+{
+    await _dbSet.AddRangeAsync(entities);
+}
+public async Task UpdateListItemsAsync(List<T> entities)
+{
+    _dbSet.UpdateRange(entities);
+}
 }
