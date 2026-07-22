@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\dotnet06_CybersoftMarketPlace.Infrastructure\dotnet06_CybersoftMarketPlace.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

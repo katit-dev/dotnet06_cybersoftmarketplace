@@ -1425,6 +1425,9 @@
       "dotnet06_CybersoftMarketPlace.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "dotnet06_CybersoftMarketPlace.Infrastructure": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/dotnet06_CybersoftMarketPlace.Application.dll": {}
         },

@@ -115,6 +115,9 @@ builder.Services
 // DI UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// DI Service
+builder.Services.AddScoped<IUserService, UserService>();
+
 // Đăng ký dịch vụ phân quyền
 builder.Services.AddAuthorization();
 
@@ -138,6 +141,7 @@ builder.Services.AddScoped<IProductVariantRepository, ProductVariantRepository>(
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
 var app = builder.Build();
 
