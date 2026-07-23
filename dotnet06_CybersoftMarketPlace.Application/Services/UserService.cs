@@ -1,11 +1,12 @@
 
+
+
 using backend_netcore_dotnet06.Helper;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
-
 public interface IUserService
 {
-    public Task RegisterUserAsync(UserRegisterDTO model);
+    public Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model);
 }
 
 public class UserService : IUserService
@@ -14,17 +15,15 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IUserRoleRepository _userRoleRepository;
 
-    // Trong tầng service sẽ gọi các repository để xử lý
-    public UserService(
-        IUnitOfWork unitOfWork,
-        IUserRepository userRepository,
-        IUserRoleRepository userRoleRepository)
+    //Trong tầng service sẽ gọi các repository để xử lý
+
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
         _userRoleRepository = userRoleRepository;
     }
-    public async Task RegisterUserAsync(UserRegisterDTO model)
+    public async Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model)
     {
         try
         {
@@ -44,29 +43,49 @@ public class UserService : IUserService
                 Deleted = false,
             };
 
+            //1.1 check email trùng
+            var existingUserByEmail = await _userRepository.SingleOrDefault(u => u.Email == model.Email || u.Username == model.Username || u.Phone == model.Phone);
+            if (existingUserByEmail != null)
+            {
+                return new HTTPResponseData<string>
+                {
+                    DataResponse = UserResponseMessageDTO.EmailUsernameOrPhoneExists,
+                    Message = UserResponseMessageDTO.EmailUsernameOrPhoneExists,
+                    statusCode = 400,
+                    Timestamp = DateTime.Now
+                };
+            }
+
             await _userRepository.AddAsync(userModel);
-
-            // 2/ insert vào bảng user_role
-
-            // Add liên bảng userrole
+            //Add liên bảng userole
             UserRole userRoleModel = new UserRole
             {
+
                 UserId = userModel.Id,
-                RoleId = UserRoleConst.User, // Mặc định khi đăng ký sẽ là role user
+                RoleId = UserRoleConst.User, //Mặc định khi đăng ký sẽ là role user
             };
-
             userModel.UserRoles.Add(userRoleModel);
-
-            // Sau khi thêm userrole từ usermodel thì SaveChangesAsync
-            // sẽ tự động thêm vào bảng UserRole
+            //Sau khi thêm userrole từ usermodel thì savachangesAsync sẽ tự động thêm vào bảng userrole
             await _unitOfWork.SaveChangesAsync();
+            return new HTTPResponseData<string>
+            {
+                DataResponse = UserResponseMessageDTO.SuccessRegister,
+                Message = UserResponseMessageDTO.SuccessRegister,
+                statusCode = 201,
+                Timestamp = DateTime.Now
+            };
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackTransactionAsync();
         }
-
+            return new HTTPResponseData<string>
+            {
+                DataResponse = UserResponseMessageDTO.FailedRegister,
+                Message = UserResponseMessageDTO.FailedRegister,
+                statusCode = 400,
+                Timestamp = DateTime.Now
+            };
 
     }
-
 }
