@@ -30,7 +30,7 @@ public class UserRegisterDTO
 
     [Required(ErrorMessage = "PhoneNumber là bắt buộc.")]
     [Phone(ErrorMessage = "PhoneNumber không đúng định dạng số điện thoại.")]
-    public string PhoneNumber { get; set; }
+    public string Phone { get; set; }
 
     [Required(ErrorMessage = "Address là bắt buộc.")]
     public string? Address { get; set; }
