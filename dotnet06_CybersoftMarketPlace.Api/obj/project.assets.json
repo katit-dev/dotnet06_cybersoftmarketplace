@@ -1426,6 +1426,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
+          "BCrypt.Net-Next": "4.2.0",
           "dotnet06_CybersoftMarketPlace.Infrastructure": "1.0.0"
         },
         "compile": {
@@ -4306,8 +4307,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Application\\dotnet06_CybersoftMarketPlace.Application.csproj": {
-              "projectPath": "d:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Application\\dotnet06_CybersoftMarketPlace.Application.csproj"
+            "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Application\\dotnet06_CybersoftMarketPlace.Application.csproj": {
+              "projectPath": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Application\\dotnet06_CybersoftMarketPlace.Application.csproj"
             },
             "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj": {
               "projectPath": "D:\\_KhanhVy\\dotnet06_cybersoftmarketplace\\dotnet06_CybersoftMarketPlace.Infrastructure\\dotnet06_CybersoftMarketPlace.Infrastructure.csproj"

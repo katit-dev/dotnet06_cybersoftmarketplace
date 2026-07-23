@@ -5,9 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+  <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dotnet06_CybersoftMarketPlace.Infrastructure\dotnet06_CybersoftMarketPlace.Infrastructure.csproj" />
   </ItemGroup>
-
 </Project>
