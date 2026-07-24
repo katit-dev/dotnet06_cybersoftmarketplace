@@ -17,8 +17,6 @@ app.MapBlazorHub();
 // Cấu hình trang chủ mặc định
 app.MapFallbackToPage("/_Host");
 
-// cau hinh trang chu ma dinh
-app.MapFallbackToPage("/_Host");
 app.UseStaticFiles();
 
 app.Run();
