@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+    <PackageReference Include="Blazor.LocalStorage" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.10" />
+    
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../dotnet06_CybersoftMarketPlace.Application/dotnet06_CybersoftMarketPlace.Application.csproj" />
+
+
+
   </ItemGroup>
 
 </Project>
