@@ -112,17 +112,19 @@ builder.Services
             };
     });
 
-// DI UnitOfWork
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-// DI Service
-builder.Services.AddScoped<IUserService, UserService>();
-
 // Đăng ký dịch vụ phân quyền
 builder.Services.AddAuthorization();
 
 // DI DbContext
 builder.Services.AddDbContext<CybersoftMarketPlaceContext>();
+
+//DI ef 
+//bật proxies
+
+string connectionString = builder.Configuration.GetConnectionString("DBConnectionstring");
+builder.Services.AddDbContext<CybersoftMarketPlaceContext>();
+
+
 
 // DI Repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -143,7 +145,38 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
+//di jwt service
+// builder.Services.AddScoped<JwtAuthService>();
+
+//DI UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+//DI Service
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+// builder.Services.AddScoped<ICartService, CartService>();
+// builder.Services.AddScoped<IOrderService, OrderService>();
+
+
+//Khai cors cho fe : http://localhost:5279
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+    {
+        builder.WithOrigins("http://localhost:5279") // Thay đổi URL của FE nếu cần
+               .AllowAnyHeader()
+               .AllowCredentials()
+               .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+app.MapControllers();
+
+app.UseCors("AllowSpecificOrigin");
 
 // ============================================================
 // SWAGGER MIDDLEWARE
@@ -157,17 +190,8 @@ if (app.Environment.IsDevelopment())
 // Chuyển HTTP sang HTTPS
 app.UseHttpsRedirection();
 
-// Xác thực người dùng bằng JWT
 app.UseAuthentication();
-
-// Kiểm tra quyền truy cập
 app.UseAuthorization();
-
-// ============================================================
-// CẤU HÌNH FILE SERVER
-// URL truy cập ảnh: /files/ten-file
-// Thư mục vật lý: FileServer
-// ============================================================
 app.UseStaticFiles();
 app.UseSwagger();
 
@@ -183,7 +207,5 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-// Ánh xạ các Controller
-app.MapControllers();
 
 app.Run();

@@ -1,18 +1,23 @@
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 public interface IRepositoryBase<T> where T : class
 {
-    Task<List<T>> GetAllAsync();
+    Task<IQueryable<T>> GetAllAsync();
     Task<T> GetByIdAsync(dynamic id);
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
     Task DeleteAsync(dynamic id);
     Task AddListItemsAsync(List<T> entities);
     Task UpdateListItemsAsync(List<T> entities);
+
     Task<T> SingleOrDefault(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
-    Task<List<T>> Where(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
+    Task<IQueryable<T>> Where(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
+
+    IQueryable<T> WhereSql(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
+    
 
 }
 
@@ -28,9 +33,9 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public async Task<List<T>> GetAllAsync()
+    public async Task<IQueryable<T>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await Task.FromResult(_dbSet.AsQueryable());
     }
 
     public async Task<T> GetByIdAsync(dynamic id)
@@ -67,17 +72,23 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
         return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 
-    public async Task<List<T>> Where(System.Linq.Expressions.Expression<Func<T, bool>> predicate)
+    public Task<IQueryable<T>> Where(System.Linq.Expressions.Expression<Func<T, bool>> predicate)
     {
-        return await _dbSet.Where(predicate).ToListAsync();
+        return Task.FromResult(_dbSet.Where(predicate));
     }
 
     public async Task AddListItemsAsync(List<T> entities)
-{
-    await _dbSet.AddRangeAsync(entities);
-}
-public async Task UpdateListItemsAsync(List<T> entities)
-{
-    _dbSet.UpdateRange(entities);
-}
+    {
+        await _dbSet.AddRangeAsync(entities);
+    }
+
+    public async Task UpdateListItemsAsync(List<T> entities)
+    {
+        _dbSet.UpdateRange(entities);
+    }
+
+    public IQueryable<T> WhereSql(Expression<Func<T, bool>> predicate)
+    {
+        return _dbSet.Where(predicate);
+    }
 }
