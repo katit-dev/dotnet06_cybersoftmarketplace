@@ -6,7 +6,21 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddOpenApi();
 
+
+
+// DI http client service
+builder.Services.AddHttpClient("CybersoftMarketPlace.Web.ServerAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5269");
+});
+
+// DI Service State management
+builder.Services.AddScoped<ProductStateService>();
+
 var app = builder.Build();
+
+
+
 
 // Cấu hình routing
 app.UseRouting();
