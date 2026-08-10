@@ -9,9 +9,9 @@ builder.Services.AddOpenApi();
 
 
 // DI http client service
-builder.Services.AddHttpClient("CybersoftMarketPlace.Web.ServerAPI", client =>
+builder.Services.AddHttpClient("CybersoftMarketplaceApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5269");
+    client.BaseAddress = new Uri("http://localhost:5269");
 });
 
 // DI Service State management
