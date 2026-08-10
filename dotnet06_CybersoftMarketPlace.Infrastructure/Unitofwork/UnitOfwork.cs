@@ -19,6 +19,7 @@ public interface IUnitOfWork : IAsyncDisposable
     IRoleRepository RoleRepository { get; }
     IShopRepository ShopRepository { get; }
     IUserRepository UserRepository { get; }
+    IUserRoleRepository UserRoleRepository { get; }
 
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
@@ -48,6 +49,7 @@ public class UnitOfWork : IUnitOfWork
     public IRoleRepository RoleRepository { get; private set; }
     public IShopRepository ShopRepository { get; private set; }
     public IUserRepository UserRepository { get; private set; }
+    public IUserRoleRepository UserRoleRepository { get; private set; }
 
 
     public UnitOfWork(CybersoftMarketPlaceContext context)
@@ -69,6 +71,7 @@ public class UnitOfWork : IUnitOfWork
         RoleRepository = new RoleRepository(_context);
         ShopRepository = new ShopRepository(_context);
         UserRepository = new UserRepository(_context);
+        UserRoleRepository = new UserRoleRepository(_context);
     }
 
     public async Task BeginTransactionAsync()
