@@ -17,6 +17,7 @@ builder.Services.AddHttpClient("CybersoftMarketplaceApi", client =>
 
 // DI Service State management
 builder.Services.AddScoped<ProductStateService>();
+builder.Services.AddScoped<UserStateService>();
 
 var app = builder.Build();
 
