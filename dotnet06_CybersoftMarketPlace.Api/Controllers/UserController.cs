@@ -38,7 +38,14 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
             return StatusCode(response.statusCode, response);
         }
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLoginDTO model)
+        {
+            HTTPResponseData<string>? response =
+                await _userService.LoginUserAsync(model);
 
+            return StatusCode(response.statusCode, response);
+        }
 
 
     }
