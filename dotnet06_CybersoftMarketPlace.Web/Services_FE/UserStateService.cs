@@ -7,7 +7,7 @@ public class UserStateService
     private readonly ILocalStorageService _localStorageService;
 
     // Lưu token tạm trong memory
-    private string accessToken;
+    public string accessToken = "";
 
     // HttpClient gọi API Backend
     private readonly HttpClient _httpClient;
