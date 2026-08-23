@@ -14,14 +14,16 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly IUserRoleRepository _userRoleRepository;
+    private readonly JwtAuthService _jwtAuthService;
 
     //Trong tầng service sẽ gọi các repository để xử lý
 
-    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository)
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository, JwtAuthService jwtAuthService)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
         _userRoleRepository = userRoleRepository;
+        _jwtAuthService = jwtAuthService;
     }
     public async Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model)
     {
