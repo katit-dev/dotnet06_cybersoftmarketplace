@@ -6,7 +6,8 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddOpenApi();
 
-
+// DI Local Storage
+builder.Services.AddLocalStorageServices();
 
 // DI http client service
 builder.Services.AddHttpClient("CybersoftMarketplaceApi", client =>
