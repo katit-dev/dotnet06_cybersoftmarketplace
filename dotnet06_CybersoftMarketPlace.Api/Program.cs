@@ -141,7 +141,7 @@ builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 
 //di jwt service
-// builder.Services.AddScoped<JwtAuthService>();
+builder.Services.AddScoped<JwtAuthService>();
 
 //DI UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
