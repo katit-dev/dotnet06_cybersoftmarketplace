@@ -26,14 +26,8 @@ public class UserStateService
 
 
     // Event thông báo UI cập nhật lại state
-    private Action OnChange { get; set; }
-
-
-    public void StateHasChanged()
-    {
-        OnChange?.Invoke();
-    }
-
+    public Action OnChange { get; set; }
+    public void StateHasChanged() => OnChange?.Invoke();
 
     public async Task LoginAsync(UserLoginDTO userLogin)
     {
