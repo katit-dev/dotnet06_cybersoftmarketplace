@@ -62,13 +62,8 @@ builder.Services.AddSwaggerGen(options =>
 // DI AUTHENTICATION - AUTHORIZATION BẰNG JWT
 // ============================================================
 
-// Khóa bí mật dùng để ký token
 var key = builder.Configuration["Jwt:Key"];
-
-// Issuer: bên phát hành token
 var issuer = builder.Configuration["Jwt:Issuer"];
-
-// Audience: bên nhận và sử dụng token
 var audience = builder.Configuration["Jwt:Audience"];
 
 // Cấu hình Authentication sử dụng JWT Bearer
