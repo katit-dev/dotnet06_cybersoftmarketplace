@@ -7,6 +7,7 @@ using Infrastructure.Repositories;
 public interface IUserService
 {
     public Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model);
+    public Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model);
 }
 
 public class UserService : IUserService
@@ -25,6 +26,31 @@ public class UserService : IUserService
         _userRoleRepository = userRoleRepository;
         _jwtAuthService = jwtAuthService;
     }
+
+    public async Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model)
+    {
+        string? token = await _jwtAuthService.GenerateToken(model);
+        if (token == null)
+        {
+            return new HTTPResponseData<string>
+            {
+                DataResponse = UserResponseMessageDTO.UserNotFound,
+                Message = UserResponseMessageDTO.UserNotFound,
+                statusCode = 401,
+                Timestamp = DateTime.Now
+            };
+        }
+
+        return new HTTPResponseData<string>
+        {
+            DataResponse = token,
+            Message = UserResponseMessageDTO.SuccessLogin,
+            statusCode = 200,
+            Timestamp = DateTime.Now
+        };
+    }
+
+
     public async Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model)
     {
         try
