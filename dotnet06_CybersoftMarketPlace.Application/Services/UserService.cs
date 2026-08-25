@@ -4,22 +4,24 @@
 using backend_netcore_dotnet06.Helper;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 public interface IUserService
 {
     public Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model);
     public Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model);
+    public Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token);
 }
 
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRepository _userRepository;
     private readonly IUserRoleRepository _userRoleRepository;
     private readonly JwtAuthService _jwtAuthService;
+    private readonly IUserRepository _userRepository;
 
     //Trong tầng service sẽ gọi các repository để xử lý
 
-    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository, JwtAuthService jwtAuthService)
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserRoleRepository userRoleRepository,JwtAuthService jwtAuthService)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
@@ -27,10 +29,63 @@ public class UserService : IUserService
         _jwtAuthService = jwtAuthService;
     }
 
+    public async Task<HTTPResponseData<ProfileUserDTO>> GetProfileAsync(string token)
+    {
+        try
+        {
+            //decode token lấy userid
+            string? userId = _jwtAuthService.DecodePayloadTokenId(token);
+            if (userId == null)
+            {
+                return new HTTPResponseData<ProfileUserDTO>
+                {
+                    DataResponse = null,
+                    Message = "Token không hợp lệ",
+                    statusCode = 401,
+                    Timestamp = DateTime.Now
+                };
+            }
+            //Nếu token hợp lệ  thì dựa vào userid lấy thông tin user đưa vào dtoprofile
+            User? user = await _unitOfWork.UserRepository.SingleOrDefault(u => u.Id.ToString() == userId);
+            ProfileUserDTO profileUserDTO = new ProfileUserDTO
+            {
+                Id = user.Id.ToString(),
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.Phone,
+                Address = user.Address,
+                AvatarUrl = user.Avatar
+            };
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = profileUserDTO,
+                Message = "Lấy thông tin người dùng thành công",
+                statusCode = 200,
+                Timestamp = DateTime.Now
+            };
+
+            //Dùng userid để lấy thông tin user từ database
+        }catch (Exception ex)
+        {
+            return new HTTPResponseData<ProfileUserDTO>
+            {
+                DataResponse = null,
+                Message = "Lỗi khi lấy thông tin người dùng: " + ex.Message,
+                statusCode = 401,
+                Timestamp = DateTime.Now
+            };
+        }
+      
+
+    }
+
     public async Task<HTTPResponseData<string>> LoginUserAsync(UserLoginDTO model)
     {
+
+
+        // tạo token
         string? token = await _jwtAuthService.GenerateToken(model);
-        if (token == null)
+        if(token == null)
         {
             return new HTTPResponseData<string>
             {
@@ -49,7 +104,6 @@ public class UserService : IUserService
             Timestamp = DateTime.Now
         };
     }
-
 
     public async Task<HTTPResponseData<string>> RegisterUserAsync(UserRegisterDTO model)
     {
