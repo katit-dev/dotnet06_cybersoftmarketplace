@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using Infrastructure.Repositories;
 using Infrastructure.Models;
@@ -47,6 +48,18 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
             return StatusCode(response.statusCode, response);
         }
 
+        [Authorize]
+        [HttpPost("getProfile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            string token = HttpContext.Request.Headers["Authorization"].ToString()
+                .Replace("Bearer ", "");
+
+            HTTPResponseData<ProfileUserDTO>? response =
+                await _userService.GetProfileAsync(token);
+
+            return StatusCode(response.statusCode, response);
+        }
 
     }
 }
