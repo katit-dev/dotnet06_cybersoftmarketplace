@@ -56,6 +56,12 @@ builder.Services.AddSwaggerGen(options =>
             Description = "Nhập token JWT vào ô dưới đây"
         }
     );
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = new List<string>()
+    });
+    
 });
 
 // ============================================================

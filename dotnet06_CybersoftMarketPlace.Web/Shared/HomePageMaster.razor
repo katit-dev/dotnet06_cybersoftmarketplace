@@ -46,7 +46,7 @@
                     }
                     else
                     {
-                        <i class="fas fa-user-circle me-1"></i> @_userStateService.accessToken
+                        <i class="fas fa-user-circle me-1"></i> @_userStateService?.CurrentUser?.Email
                     }
 
                 </a>
@@ -197,7 +197,7 @@
         
 
         _userStateService.OnChange += StateHasChanged;
-        @* await _userStateService.GetProfileAsync(); *@
+        await _userStateService.GetProfileAsync();
     }
 
     public void Dispose()

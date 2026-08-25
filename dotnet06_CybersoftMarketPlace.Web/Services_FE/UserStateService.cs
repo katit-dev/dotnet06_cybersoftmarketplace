@@ -1,84 +1,87 @@
+using Infrastructure.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using System.Net.Http.Headers;
-
+using static System.Net.WebRequestMethods;
 public class UserStateService
 {
-    // Service dùng để đọc/ghi LocalStorage của browser
     private readonly ILocalStorageService _localStorageService;
-
-    // Lưu token tạm trong memory
     public string accessToken = "";
-
-    // HttpClient gọi API Backend
     private readonly HttpClient _httpClient;
 
+    public ProfileUserDTO? CurrentUser { get; private set; }
+    public readonly NavigationManager _navigationManager;
 
-    public UserStateService(
-        ILocalStorageService localStorageService,
-        IHttpClientFactory httpClientFactory)
+    public UserStateService(ILocalStorageService localStorageService, IHttpClientFactory httpClientFactory,NavigationManager nav)
     {
         _localStorageService = localStorageService;
-
-        // Tạo HttpClient đã cấu hình sẵn BaseAddress
-        _httpClient = httpClientFactory
-            .CreateClient("CybersoftMarketplaceApi");
+        _httpClient = httpClientFactory.CreateClient("CybersoftMarketplaceApi");
+        _navigationManager = nav; //Service dùng để chuyển hướng trang
     }
 
-
-    // Event thông báo UI cập nhật lại state
     public Action OnChange { get; set; }
     public void StateHasChanged() => OnChange?.Invoke();
 
     public async Task LoginAsync(UserLoginDTO userLogin)
     {
-        // 1. Gọi API Login Backend
-        var response = await _httpClient
-            .PostAsJsonAsync(
-                "/api/User/Login",
-                userLogin
-            );
-
-
-        // 2. Kiểm tra API trả về thành công
+        //Gọi api từ backend để đăng nhập
+        var response = await _httpClient.PostAsJsonAsync("/api/User/Login", userLogin);
         if (response.IsSuccessStatusCode)
         {
-
-            // 3. Đọc response JSON từ API
-            var responseData =
-                await response.Content
-                .ReadFromJsonAsync<HTTPResponseData<string>>();
-
-
-            if(responseData != null 
-               && responseData.statusCode == 200)
+            var responseData = await response.Content.ReadFromJsonAsync<HTTPResponseData<string>>();
+            if (responseData != null && responseData.statusCode == 200)
             {
-
-                // 4. Lấy JWT token
                 accessToken = responseData.DataResponse;
+                await _localStorageService.SetItemAsync("accessToken", accessToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
+                //Gọi hàm getprofile khi đăng nhập
+                await GetProfileAsync();
+                _navigationManager.NavigateTo("/profile"); //Chuyển hướng về trang chủ sau khi đăng nhập thành công
 
-                // 5. Lưu JWT vào LocalStorage browser
-                await _localStorageService
-                    .SetItemAsync(
-                        "accessToken",
-                        accessToken
-                    );
-
-
-                // 6. Gắn token vào HttpClient
-                // Các request sau sẽ tự gửi:
-                // Authorization: Bearer {token}
-
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue(
-                        "Bearer",
-                        accessToken
-                    );
-
-
-                // 7. Báo UI login thành công
                 StateHasChanged();
+                
             }
         }
     }
+
+    public async Task GetProfileAsync()
+    {
+        //Add header token
+        string? token = await _localStorageService.GetItemAsync<string>("accessToken");
+        Console.WriteLine($@"{token} - tokendemo");
+        if (token != null)
+        {
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            //Gọi api từ backend để lấy thông tin người dùng
+            HttpResponseMessage? response = await _httpClient.PostAsync("/api/User/getProfile", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                HTTPResponseData<ProfileUserDTO>? responseData = await response.Content.ReadFromJsonAsync<HTTPResponseData<ProfileUserDTO>>();
+                if (responseData != null && responseData.statusCode == 200)
+                {
+                    CurrentUser = responseData.DataResponse;
+                    accessToken = token;
+                    StateHasChanged();
+                }
+            }
+        }else
+        {
+            CurrentUser = null;
+            accessToken = "";
+            StateHasChanged();
+        }
+    }
+
+    public async Task LogoutAsync()
+    {
+        accessToken = "";
+        CurrentUser = null;
+        await _localStorageService.RemoveItemAsync("accessToken");
+        _httpClient.DefaultRequestHeaders.Authorization = null;
+        StateHasChanged();
+    }
+
 }
