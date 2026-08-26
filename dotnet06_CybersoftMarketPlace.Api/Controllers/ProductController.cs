@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Infrastructure.Repositories;
 using Infrastructure.Models;
-using backend_netcore_dotnet06.Helper;  
+using backend_netcore_dotnet06.Helper;
 namespace dotnet06_CybersoftMarketPlace.Api.Controllers
 {
     [ApiController]
@@ -33,8 +33,15 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
             HTTPResponseData<List<ProductIndexPageDTO>>? response = await _productService.GetAllProductsAsync(keyword, pageIndex, pageSize);
             return StatusCode(response.statusCode, response);
         }
-        
 
-        
+
+        [HttpGet("GetProductDetail/{productId}")]
+        public async Task<IActionResult> GetProductDetail(int productId)
+        {
+            HTTPResponseData<ProductDetailDTO>? response = await _productService
+                .GetProductDetailAsync(productId);
+
+            return StatusCode(response.statusCode, response);
+        }
     }
 }
