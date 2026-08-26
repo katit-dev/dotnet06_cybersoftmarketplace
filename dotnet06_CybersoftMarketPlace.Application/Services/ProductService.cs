@@ -10,7 +10,8 @@ using System.Linq;
 public interface IProductService
 {
     Task<HTTPResponseData<List<ProductIndexPageDTO>>> GetAllProductsAsync(string keyword = "", int pageIndex = 1, int pageSize = 10);
-}
+
+    Task<HTTPResponseData<ProductDetailDTO>> GetProductDetailAsync(int productId);} 
 
 public class ProductService : IProductService
 {
@@ -66,8 +67,70 @@ public class ProductService : IProductService
             Message = "Lấy danh sách sản phẩm thành công",
             statusCode = 200
         };
+
     }
 
-   
+    public async Task<HTTPResponseData<ProductDetailDTO>> GetProductDetailAsync(int productId)
+    {
+        ProductDetailDTO? prodDetailDTO = new ProductDetailDTO();
+        //process:
+        //Cách 1 dùng singleordefault thực hiện fill từng trường bằng nhiều repository khác nhau
+        //1. Lấy sản phẩm từ repository  
+        Product? prodDetail = await _unitOfWork.ProductRepository.SingleOrDefault(prod => prod.Id == productId && prod.Deleted == false);
+        if(prodDetail == null)
+        {
+            return new HTTPResponseData<ProductDetailDTO>
+            {
+                DataResponse = null,
+                Message = "Không tìm thấy sản phẩm",
+                statusCode = 404
+            };
+        }
+        //Map dữ liệu từ bảng product vào dto  
+        prodDetailDTO.Id = prodDetail.Id;
+        prodDetailDTO.Name = prodDetail.Name;
+        prodDetailDTO.Description = prodDetail.Description ?? "";
+        prodDetailDTO.Price = prodDetail.ProductVariants.FirstOrDefault()?.Price ?? 0;
+        prodDetailDTO.ImageUrl = prodDetail.Image ?? "https://via.placeholder.com/150";
+
+        //Lấy danh sách hình ảnh của sản phẩm từ bảng ProductImage
+        prodDetailDTO.ListImageUrl = _unitOfWork.ProductImageRepository.Where(prodImg => prodImg.ProductId == productId).Result.Select(prodImg => prodImg.ImageUrl).ToList();
+
+
+        //Lấy danh sách biến thể của sản phẩm từ bảng ProductVariant
+        prodDetailDTO.ListProductVariant = _unitOfWork.ProductVariantRepository.Where(prodVar => prodVar.ProductId == productId).Result.Select(prodVar => new ProductVariantDetailDTO
+        {
+            Id = prodVar.Id,
+            Name = prodVar.VariantName,
+            Price = prodVar.Price,
+            ImageUrl = prodVar.Image ?? "https://via.placeholder.com/150",
+            Stock = prodVar.Stock
+        }).ToList();
+
+        //Map thông tin shop vào dto productdetailDTO
+        prodDetailDTO.shopProductDetailDTO = _unitOfWork.ShopRepository.SingleOrDefault(shop => shop.Id == prodDetail.ShopId).Result is Shop shop ? new ShopProductDetailDTO
+        {
+            Id = prodDetail.Shop.Id,
+            ShopName = prodDetail.Shop.ShopName,
+            Description = prodDetail.Shop.Description ?? "",
+            Image = prodDetail.Shop.Image ?? "https://via.placeholder.com/150"
+        } : new ShopProductDetailDTO
+        {
+            Id = 0,
+            ShopName = "Không xác định",
+            Description = "",
+            Image = "https://via.placeholder.com/150"
+        };
+
+        
+
+        return new HTTPResponseData<ProductDetailDTO> //return response
+        {
+            DataResponse = prodDetailDTO,
+            Message = "Lấy chi tiết sản phẩm thành công",
+            statusCode = 200
+        };
+
+    }
 
 }
