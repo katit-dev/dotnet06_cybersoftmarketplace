@@ -114,7 +114,7 @@ public class ProductService : IProductService
             ShopName = prodDetail.Shop.ShopName,
             Description = prodDetail.Shop.Description ?? "",
             Image = prodDetail.Shop.Image ?? "https://via.placeholder.com/150"
-        } : new ShopProductDetailDTO
+        } : new ShopProductDetailDTO // neu khong co thi return khong xac dinh
         {
             Id = 0,
             ShopName = "Không xác định",
