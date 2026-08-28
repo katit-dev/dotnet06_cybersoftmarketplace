@@ -70,6 +70,7 @@
                 <span class="ms-auto text-secondary">Tố cáo</span>
             </div>
 
+            @* Giá gốc hiển thị là 120% của giá hiện tại để mô phỏng khuyến mãi giảm 20%, còn giá bán thực tế là giá variant đang chọn *@
             <div class="bg-light rounded p-3 mb-3">
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-secondary text-decoration-line-through">@((_productService.productVarSelected.Price* 120/100).ToString("N0"))</span>
