@@ -1,0 +1,325 @@
+@page "/detail/{productId:int}"
+@layout HomePageMaster
+@inject ProductStateService _productService
+@implements IDisposable
+
+@{
+
+    ProductDetailDTO model = _productService.productDetailDTO;
+}
+
+@* ===================== BREADCRUMB ===================== *@
+<nav class="mb-3">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-danger">Shopee</a></li>
+        <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-danger">Sản phẩm nổi bật</a></li>
+        <li class="breadcrumb-item active">@model.Name</li>
+    </ol>
+</nav>
+
+@* ===================== KHỐI CHÍNH: ẢNH + THÔNG TIN ===================== *@
+<div class="bg-white border rounded p-3 p-md-4 mb-3">
+    <div class="row g-4">
+
+        @* --------- Cột trái: gallery ảnh --------- *@
+        <div class="col-12 col-md-5 col-lg-4">
+            <img id="mainImage" src="@MainImageUrl"
+                 @onerror="OnMainImageError"
+                 class="img-fluid border rounded w-100" alt="@model.Name" />
+
+            <div class="row g-2 mt-1">
+                @foreach(string imgUrl in model.ListImageUrl)
+                {
+                    <div class="col-3">
+                        <img src="@imgUrl" class="img-fluid border border-2 rounded" alt="@model.Name" />
+                    </div>
+                }
+          
+            </div>
+
+            <div class="d-flex align-items-center justify-content-center gap-3 mt-3 small text-secondary">
+                <span>Chia sẻ:</span>
+                <a href="#" class="text-secondary"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="#" class="text-secondary"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-secondary"><i class="fab fa-pinterest fa-lg"></i></a>
+                <span class="vr"></span>
+                <a href="#" class="text-danger text-decoration-none">
+                    <i class="far fa-heart me-1"></i>Đã thích (0)
+                </a>
+            </div>
+        </div>
+
+        @* --------- Cột phải: thông tin sản phẩm --------- *@
+        <div class="col-12 col-md-7 col-lg-8">
+
+            <h4 class="fw-semibold mb-2">@model.Name</h4>
+
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3 small">
+                <span class="text-danger text-decoration-underline fw-semibold">0</span>
+                <span class="text-warning">
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                </span>
+                <span class="vr"></span>
+                <span><span class="fw-semibold text-dark">0</span> <span class="text-secondary">Đánh Giá</span></span>
+                <span class="vr"></span>
+                <span><span class="fw-semibold text-dark">1,2k</span> <span class="text-secondary">Đã Bán</span></span>
+                <span class="ms-auto text-secondary">Tố cáo</span>
+            </div>
+
+            <div class="bg-light rounded p-3 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-secondary text-decoration-line-through">@((_productService.productVarSelected.Price* 120/100).ToString("N0"))</span>
+                    <span class="fs-3 fw-bold text-danger">@("₫" + _productService.productVarSelected.Price.ToString("N0"))</span>
+                    <span class="badge bg-danger">GIẢM 20%</span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-4 col-lg-3 text-secondary small">Vận Chuyển</div>
+                <div class="col-8 col-lg-9 small">
+                    <div class="mb-1">
+                        <i class="fas fa-truck text-success me-2"></i>Miễn phí vận chuyển
+                    </div>
+                    <div class="text-secondary">
+                        Vận chuyển tới <span class="text-dark fw-semibold">Quận 1, TP. Hồ Chí Minh</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-4 col-lg-3 text-secondary small pt-2">Phân Loại</div>
+                <div class="col-8 col-lg-9">
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach(ProductVariantDetailDTO prodVariant in model.ListProductVariant)
+                        {
+                            if (prodVariant.Id == _productService.productVarSelected.Id)
+                            {
+                                <button type="button" class="btn btn-danger btn-sm text-start d-flex align-items-center gap-2">
+                                    <img src="@prodVariant.ImageUrl" onerror="this.onerror=null;this.src='https://picsum.photos/id/@prodVariant.Id/150';" width="32" height="32" class="rounded" alt="@prodVariant.Name" />
+                                    <span>
+                                        @prodVariant.Name
+                                        <small class="d-block text-secondary">@("₫" + prodVariant.Price.ToString("N0"))</small>
+                                    </span>
+                                </button>                
+                            }
+                            else
+                            {
+                                <button @onclick="@((e)=>_productService.SetProductVarSelected(prodVariant))" type="button" class="btn btn-outline-danger btn-sm text-start d-flex align-items-center gap-2">
+                                <img src="@prodVariant.ImageUrl" onerror="this.onerror=null;this.src='https://picsum.photos/id/@prodVariant.Id/150';" width="32" height="32" class="rounded" alt="@prodVariant.Name" />
+                                <span>
+                                    @prodVariant.Name
+                                    <small class="d-block text-secondary">@("₫" + prodVariant.Price.ToString("N0"))</small>
+                                </span>
+                            </button>
+                            }
+
+                        }
+                        
+
+                     
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-4 col-lg-3 text-secondary small pt-2">Số Lượng</div>
+                <div class="col-8 col-lg-9">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="input-group input-group-sm" style="width: 120px">
+                            <button class="btn btn-outline-secondary" type="button">-</button>
+                            <input type="text" class="form-control text-center" value="1" />
+                            <button class="btn btn-outline-secondary" type="button">+</button>
+                        </div>
+                        <span class="small text-secondary">@_productService.productVarSelected.Stock sản phẩm có sẵn</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3">
+                <button type="button" class="btn btn-outline-danger px-4">
+                    <i class="fas fa-cart-plus me-2"></i>Thêm Vào Giỏ Hàng
+                </button>
+                <button type="button" class="btn btn-danger px-5">Mua Ngay</button>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex flex-wrap gap-4 small text-secondary">
+                <span><i class="fas fa-shield-alt text-danger me-2"></i>Shopee Đảm Bảo</span>
+                <span><i class="fas fa-undo text-danger me-2"></i>7 Ngày Miễn Phí Trả Hàng</span>
+                <span><i class="fas fa-check-circle text-danger me-2"></i>Hàng Chính Hãng 100%</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* ===================== THÔNG TIN SHOP ===================== *@
+<div class="bg-white border rounded p-3 p-md-4 mb-3">
+    <div class="row g-3 align-items-center">
+
+        <div class="col-12 col-lg-5">
+            <div class="d-flex align-items-center gap-3">
+                <img src="@model.shopProductDetailDTO.Image"
+                     class="rounded-circle border" width="72" height="72" alt="@model.shopProductDetailDTO.ShopName" />
+                <div>
+                    <h6 class="mb-1 fw-semibold">@model.shopProductDetailDTO.ShopName</h6>
+                    <p class="small text-secondary mb-2">
+                        @model.shopProductDetailDTO.Description
+                    </p>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm">
+                            <i class="far fa-comment-dots me-1"></i>Chat Ngay
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-store me-1"></i>Xem Shop
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-7">
+            <div class="row text-center small">
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Đánh Giá</div>
+                    <div class="text-danger fw-semibold">1,5k</div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Sản Phẩm</div>
+                    <div class="text-danger fw-semibold">128</div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Tỉ Lệ Phản Hồi</div>
+                    <div class="text-danger fw-semibold">98%</div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Thời Gian Phản Hồi</div>
+                    <div class="text-danger fw-semibold">Trong vài giờ</div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Tham Gia</div>
+                    <div class="text-danger fw-semibold">3 năm trước</div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="text-secondary">Người Theo Dõi</div>
+                    <div class="text-danger fw-semibold">10,2k</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* ===================== CHI TIẾT SẢN PHẨM ===================== *@
+<div class="bg-white border rounded p-3 p-md-4 mb-3">
+    <h6 class="bg-light p-2 rounded text-uppercase fw-semibold">Chi Tiết Sản Phẩm</h6>
+
+    <div class="row small mb-2">
+        <div class="col-4 col-md-3 text-secondary">Danh Mục</div>
+        <div class="col-8 col-md-9">
+            <a href="#" class="text-decoration-none text-danger">Shopee</a>
+            <span class="text-secondary mx-1">&gt;</span>
+            <a href="#" class="text-decoration-none text-danger">Sản phẩm nổi bật</a>
+        </div>
+    </div>
+    <div class="row small mb-2">
+        <div class="col-4 col-md-3 text-secondary">Kho Hàng</div>
+        <div class="col-8 col-md-9">200</div>
+    </div>
+    <div class="row small mb-2">
+        <div class="col-4 col-md-3 text-secondary">Gửi Từ</div>
+        <div class="col-8 col-md-9">TP. Hồ Chí Minh</div>
+    </div>
+
+    <h6 class="bg-light p-2 rounded text-uppercase fw-semibold mt-4">Mô Tả Sản Phẩm</h6>
+    <p class="small mb-0">
+        Sản phẩm thuộc danh mục "Sản phẩm nổi bật", được phân phối bởi cửa hàng.
+    </p>
+</div>
+
+@* ===================== ĐÁNH GIÁ SẢN PHẨM ===================== *@
+<div class="bg-white border rounded p-3 p-md-4">
+    <h6 class="bg-light p-2 rounded text-uppercase fw-semibold">Đánh Giá Sản Phẩm</h6>
+
+    <div class="border border-danger rounded p-3 mb-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-3 text-center">
+                <div class="fs-4 text-danger fw-semibold">0 <span class="fs-6">trên 5</span></div>
+                <div class="text-warning">
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+            </div>
+            <div class="col-12 col-md-9">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-danger btn-sm">Tất Cả</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">5 Sao (0)</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">4 Sao (0)</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">3 Sao (0)</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">2 Sao (0)</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">1 Sao (0)</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm">Có Bình Luận (0)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center text-secondary py-5">
+        <i class="far fa-comment-alt fa-3x mb-3"></i>
+        <p class="mb-0 small">Chưa có đánh giá nào cho sản phẩm này</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int productId { get; set; }
+
+    // Id của variant có ảnh bị lỗi — dùng để đổi sang ảnh dự phòng
+    private int? _mainImageErrorVariantId;
+
+    // Ảnh chính: lỗi thì lấy ảnh dự phòng, đổi variant thì tự quay lại ảnh gốc
+    private string MainImageUrl =>
+        _mainImageErrorVariantId == _productService.productVarSelected.Id
+            ? $"https://picsum.photos/id/{_productService.productVarSelected.Id}/150"
+            : _productService.productVarSelected.ImageUrl;
+
+    private void OnMainImageError(ErrorEventArgs e)
+    {
+        _mainImageErrorVariantId = _productService.productVarSelected.Id;
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productService.OnChange += StateHasChanged;
+        
+        //Gọi api cập nhật state management
+        await _productService.LoadProductDetailAsync(productId);
+
+    }
+
+
+    
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await _productService.LoadProductDetailAsync(productId);
+    }
+
+
+
+    public void Dispose()
+    {
+        _productService.OnChange -= StateHasChanged;
+
+    }
+}
