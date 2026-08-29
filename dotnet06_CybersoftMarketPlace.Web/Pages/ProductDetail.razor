@@ -17,12 +17,13 @@
     </ol>
 </nav>
 
-@* ===================== KHỐI CHÍNH: ẢNH + THÔNG TIN ===================== *@
+@* ===================== KHỐI CHÍNH: ẢNH + THÔNG TIN SẢN PHẨM ===================== *@
 <div class="bg-white border rounded p-3 p-md-4 mb-3">
     <div class="row g-4">
 
-        @* --------- Cột trái: gallery ảnh --------- *@
+        @* ----- Phần 1: Gallery ảnh sản phẩm (ảnh lớn + ảnh nhỏ xem trước) ----- *@
         <div class="col-12 col-md-5 col-lg-4">
+            @* Ảnh lớn đang được hiển thị chính, thay đổi theo variant đang chọn *@
             <img id="mainImage" src="@MainImageUrl"
                  @onerror="OnMainImageError"
                  class="img-fluid border rounded w-100" alt="@model.Name" />
@@ -49,11 +50,13 @@
             </div>
         </div>
 
-        @* --------- Cột phải: thông tin sản phẩm --------- *@
+        @* ----- Phần 2: Thông tin sản phẩm chính (tên, rating, giá, phân loại, số lượng, mua hàng) ----- *@
         <div class="col-12 col-md-7 col-lg-8">
 
+            @* Tên sản phẩm hiển thị ở đầu trang chi tiết *@
             <h4 class="fw-semibold mb-2">@model.Name</h4>
 
+            @* Khối thống kê đánh giá, số lượng bán và điểm đánh giá nhanh *@
             <div class="d-flex flex-wrap align-items-center gap-3 mb-3 small">
                 <span class="text-danger text-decoration-underline fw-semibold">0</span>
                 <span class="text-warning">
@@ -70,7 +73,7 @@
                 <span class="ms-auto text-secondary">Tố cáo</span>
             </div>
 
-            @* Giá gốc hiển thị là 120% của giá hiện tại để mô phỏng khuyến mãi giảm 20%, còn giá bán thực tế là giá variant đang chọn *@
+            @* Giá hiển thị: giá gốc giả lập 120% để tạo hiệu ứng khuyến mãi, giá bán thực tế lấy từ variant đang chọn *@
             <div class="bg-light rounded p-3 mb-3">
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-secondary text-decoration-line-through">@((_productService.productVarSelected.Price* 120/100).ToString("N0"))</span>
@@ -79,6 +82,7 @@
                 </div>
             </div>
 
+            @* Thông tin vận chuyển và địa điểm giao hàng *@
             <div class="row mb-3">
                 <div class="col-4 col-lg-3 text-secondary small">Vận Chuyển</div>
                 <div class="col-8 col-lg-9 small">
@@ -91,6 +95,7 @@
                 </div>
             </div>
 
+            @* Danh sách biến thể/variant của sản phẩm, cho phép đổi phiên bản và cập nhật giá/ảnh *@
             <div class="row mb-3">
                 <div class="col-4 col-lg-3 text-secondary small pt-2">Phân Loại</div>
                 <div class="col-8 col-lg-9">
@@ -127,6 +132,7 @@
                 </div>
             </div>
 
+            @* Chọn số lượng mua theo tồn kho của variant đang được chọn *@
             <div class="row mb-4">
                 <div class="col-4 col-lg-3 text-secondary small pt-2">Số Lượng</div>
                 <div class="col-8 col-lg-9">
@@ -141,6 +147,7 @@
                 </div>
             </div>
 
+            @* Nút chức năng mua hàng: thêm giỏ hàng và mua ngay *@
             <div class="d-flex flex-wrap gap-3">
                 <button type="button" class="btn btn-outline-danger px-4">
                     <i class="fas fa-cart-plus me-2"></i>Thêm Vào Giỏ Hàng
@@ -160,10 +167,11 @@
     </div>
 </div>
 
-@* ===================== THÔNG TIN SHOP ===================== *@
+@* ===================== THÔNG TIN SHOP / NHÀ BÁN ===================== *@
 <div class="bg-white border rounded p-3 p-md-4 mb-3">
     <div class="row g-3 align-items-center">
 
+        @* Khối thông tin shop: logo, tên shop, mô tả, nút chat/xem shop *@
         <div class="col-12 col-lg-5">
             <div class="d-flex align-items-center gap-3">
                 <img src="@model.shopProductDetailDTO.Image"
@@ -185,6 +193,7 @@
             </div>
         </div>
 
+        @* Thống kê nhanh của shop để tăng độ tin cậy trước khi mua *@
         <div class="col-12 col-lg-7">
             <div class="row text-center small">
                 <div class="col-4 col-md-2">
@@ -217,8 +226,9 @@
     </div>
 </div>
 
-@* ===================== CHI TIẾT SẢN PHẨM ===================== *@
+@* ===================== CHI TIẾT SẢN PHẨM / MÔ TẢ ===================== *@
 <div class="bg-white border rounded p-3 p-md-4 mb-3">
+    @* Phần mô tả sản phẩm và thông tin thêm về danh mục, kho hàng, nơi gửi *@
     <h6 class="bg-light p-2 rounded text-uppercase fw-semibold">Chi Tiết Sản Phẩm</h6>
 
     <div class="row small mb-2">
@@ -244,8 +254,9 @@
     </p>
 </div>
 
-@* ===================== ĐÁNH GIÁ SẢN PHẨM ===================== *@
+@* ===================== PHẦN ĐÁNH GIÁ SẢN PHẨM ===================== *@
 <div class="bg-white border rounded p-3 p-md-4">
+    @* Hiển thị tổng quan đánh giá, phần trăm sao và bộ lọc đánh giá *@
     <h6 class="bg-light p-2 rounded text-uppercase fw-semibold">Đánh Giá Sản Phẩm</h6>
 
     <div class="border border-danger rounded p-3 mb-3">
@@ -281,46 +292,42 @@
 </div>
 
 @code {
+    // ID của sản phẩm đang được mở trên URL /detail/{productId}
     [Parameter]
     public int productId { get; set; }
 
-    // Id của variant có ảnh bị lỗi — dùng để đổi sang ảnh dự phòng
+    // Lưu ID variant đang gặp lỗi ảnh để swap sang hình dự phòng
     private int? _mainImageErrorVariantId;
 
-    // Ảnh chính: lỗi thì lấy ảnh dự phòng, đổi variant thì tự quay lại ảnh gốc
+    // Đường dẫn ảnh chính: nếu ảnh của variant hiện tại lỗi thì dùng ảnh dự phòng
     private string MainImageUrl =>
         _mainImageErrorVariantId == _productService.productVarSelected.Id
             ? $"https://picsum.photos/id/{_productService.productVarSelected.Id}/150"
             : _productService.productVarSelected.ImageUrl;
 
+    // Xử lý khi ảnh chính của variant không load được
     private void OnMainImageError(ErrorEventArgs e)
     {
         _mainImageErrorVariantId = _productService.productVarSelected.Id;
     }
 
-
+    // Khởi tạo component: đăng ký event cập nhật UI và nạp dữ liệu sản phẩm đầu tiên
     protected override async Task OnInitializedAsync()
     {
         _productService.OnChange += StateHasChanged;
-        
-        //Gọi api cập nhật state management
-        await _productService.LoadProductDetailAsync(productId);
 
+        await _productService.LoadProductDetailAsync(productId);
     }
 
-
-    
-
+    // Mỗi khi route hoặc tham số trang thay đổi, tải lại dữ liệu chi tiết sản phẩm
     protected override async Task OnParametersSetAsync()
     {
         await _productService.LoadProductDetailAsync(productId);
     }
 
-
-
+    // Hủy đăng ký event tránh memory leak khi component bị unmount
     public void Dispose()
     {
         _productService.OnChange -= StateHasChanged;
-
     }
 }
