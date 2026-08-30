@@ -56,7 +56,7 @@ public partial class CybersoftMarketPlaceContext : DbContext
     public virtual DbSet<VGetAllProductsDetailV> VGetAllProductsDetailVs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DBConnectionString");
+        => optionsBuilder.UseSqlServer("Name=DBConnectionstring");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -77,6 +77,9 @@ public partial class CybersoftMarketPlaceContext : DbContext
 
             entity.Property(e => e.Alias).HasMaxLength(200);
             entity.Property(e => e.Deleted).HasDefaultValue(false);
+            entity.Property(e => e.Price)
+                .HasDefaultValue(0m, "DEFAULT_CartItems_Price")
+                .HasColumnType("decimal(18, 0)");
 
             entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.CartId)

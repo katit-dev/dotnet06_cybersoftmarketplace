@@ -17,6 +17,10 @@ public partial class CartItem
 
     public bool? Deleted { get; set; }
 
+    public decimal? Price { get; set; }
+
+    public string? ImageUrl { get; set; }
+
     public virtual Cart Cart { get; set; } = null!;
 
     public virtual ProductVariant Variant { get; set; } = null!;
