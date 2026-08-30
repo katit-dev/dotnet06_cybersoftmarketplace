@@ -1,6 +1,6 @@
 public class CartDTO
 {
-    public Guid UserId { get; set; }
+    public string UserId { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now; //Ngày tạo giỏ hàng
     public List<CartItemDTO> CartItems { get; set; } = new List<CartItemDTO>(); //Danh sách các sản phẩm variant trong giỏ hàng
 }

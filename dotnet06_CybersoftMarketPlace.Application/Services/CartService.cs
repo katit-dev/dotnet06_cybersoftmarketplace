@@ -5,7 +5,7 @@ using static System.Net.WebRequestMethods;
 
 public interface ICartService
 {
-    Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(Guid userId);
+    Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(string userId);
     // Task<HTTPResponseData<CartDTO>> AddItemToCartAsync(string userId, int productVariantId, int quantity=1);
     // Task<HTTPResponseData<CartDTO>> ChangeQuantityVariantInCartAsync(string userId, int productVariantId, int quantity);
 
@@ -21,11 +21,12 @@ public class CartService : ICartService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(Guid userId)
+   public async Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(string userId)
     {
-        CartDTO? cartDTO = _unitOfWork.CartRepository.WhereSql(p => p.UserId == userId).Select(cart => new CartDTO
+        //Xây dựng tính năng load giỏ hàng từ database theo userId
+        CartDTO? cartDTO = _unitOfWork.CartRepository.WhereSql(p => p.UserId == Guid.Parse(userId)).Select(cart => new CartDTO
         {
-            UserId = userId,
+            UserId = cart.UserId.ToString(),
             CreatedDate = DateTime.Now,
             CartItems = cart.CartItems.Select(item => new CartItemDTO
             {
@@ -36,6 +37,7 @@ public class CartService : ICartService
                 Name = item.Variant.VariantName
             }).ToList()
         }).FirstOrDefault();
+
 
         if (cartDTO == null)
         {
@@ -57,6 +59,7 @@ public class CartService : ICartService
             Message = "Cart retrieved successfully.",
             DataResponse = cartDTO
         };
+
 
     }
 }
