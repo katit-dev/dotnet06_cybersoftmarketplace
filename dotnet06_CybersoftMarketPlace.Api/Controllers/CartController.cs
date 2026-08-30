@@ -26,9 +26,14 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
         [HttpGet("GetCartByUserId")]
         public async Task<IActionResult> GetCartByUserId()
         {
+            //Lấy token từ header Authorization
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            //Gọi service trả về giỏ hàng tương ứng của userid đó 
-            HTTPResponseData<CartDTO>? response = await _cartService.GetCartByUserIdAsync(HttpContext.User.Identity.Name);
+            //Decode token để lấy userId
+            string userId = _jwtService.DecodePayloadTokenId(token);
+
+            //Gọi service trả về giỏ hàng tương ứng của userid đó
+            HTTPResponseData<CartDTO>? response = await _cartService.GetCartByUserIdAsync(userId);
             return StatusCode(response.statusCode, response);
         }
 
