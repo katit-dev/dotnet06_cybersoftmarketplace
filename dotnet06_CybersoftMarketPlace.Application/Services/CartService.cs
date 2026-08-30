@@ -6,7 +6,7 @@ using static System.Net.WebRequestMethods;
 public interface ICartService
 {
     Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(string userId);
-    // Task<HTTPResponseData<CartDTO>> AddItemToCartAsync(string userId, int productVariantId, int quantity=1);
+    Task<HTTPResponseData<CartDTO>> AddItemToCartAsync(string userId, int productVariantId, int quantity=1);
     // Task<HTTPResponseData<CartDTO>> ChangeQuantityVariantInCartAsync(string userId, int productVariantId, int quantity);
 
     // Task<int> GetCartIdByUserId(string userId);
@@ -21,7 +21,12 @@ public class CartService : ICartService
         _unitOfWork = unitOfWork;
     }
 
-   public async Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(string userId)
+    public Task<HTTPResponseData<CartDTO>> AddItemToCartAsync(string userId, int productVariantId, int quantity = 1)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<HTTPResponseData<CartDTO>> GetCartByUserIdAsync(string userId)
     {
         //Xây dựng tính năng load giỏ hàng từ database theo userId
         CartDTO? cartDTO = _unitOfWork.CartRepository.WhereSql(p => p.UserId == Guid.Parse(userId)).Select(cart => new CartDTO
