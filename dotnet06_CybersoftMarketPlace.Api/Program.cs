@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 // ============================================================
 // DI SWAGGER
@@ -176,6 +177,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.MapControllers();
+app.MapHub<CartHub>("/cartHub");
 
 app.UseCors("AllowSpecificOrigin");
 
