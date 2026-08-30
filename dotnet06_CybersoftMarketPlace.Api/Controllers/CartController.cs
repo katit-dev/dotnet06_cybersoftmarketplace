@@ -26,16 +26,35 @@ namespace dotnet06_CybersoftMarketPlace.Api.Controllers
         [HttpGet("GetCartByUserId")]
         public async Task<IActionResult> GetCartByUserId()
         {
-            // //Lấy token từ header Authorization
-            // var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            // //Decode token để lấy userId
-            // string userId = _jwtService.DecodePayloadTokenId(token);
 
             //Gọi service trả về giỏ hàng tương ứng của userid đó 
             HTTPResponseData<CartDTO>? response = await _cartService.GetCartByUserIdAsync(HttpContext.User.Identity.Name);
             return StatusCode(response.statusCode, response);
         }
 
+        [Authorize]
+        [HttpPost("AddItemToCart")]
+        public async Task<IActionResult> AddItemToCart([FromBody] AddItemToCartDTO addItemToCartDTO)
+        {
+            int productVariantId = addItemToCartDTO.ProductVariantId;
+            int quantity = addItemToCartDTO.Quantity;
 
+            //Validate input
+            if (productVariantId <= 0 || quantity <= 0)
+            {
+                return BadRequest(new HTTPResponseData<string>
+                {
+                    statusCode = 400,
+                    Message = "Invalid product variant ID or quantity.",
+                    DataResponse = null
+                });
+            }
+            {
+
+                //Gọi service để thêm item vào giỏ hàng của userid đó 
+                HTTPResponseData<CartDTO>? response = await _cartService.AddItemToCartAsync(User.Identity.Name, productVariantId, quantity);
+                return StatusCode(response.statusCode, response);
+            }
+        }
     }
 }
