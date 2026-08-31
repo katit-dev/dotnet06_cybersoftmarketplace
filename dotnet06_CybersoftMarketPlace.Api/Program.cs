@@ -177,7 +177,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.MapControllers();
-app.MapHub<CartHub>("/cartHub");
+app.MapHub<CartHub>("/cart-hub");
 
 app.UseCors("AllowSpecificOrigin");
 
